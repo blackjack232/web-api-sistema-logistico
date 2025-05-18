@@ -27,7 +27,7 @@ export default function CrudUsuarios() {
   const [usuarios, setUsuarios] = useState<UserFormData[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const token = localStorage.getItem("authToken") ?? "";
+  const [token, setToken] = useState("");
   const {
     register,
     handleSubmit,
@@ -93,8 +93,16 @@ export default function CrudUsuarios() {
   };
 
   useEffect(() => {
-    fetchUsuarios();
+    const storedToken = localStorage.getItem("authToken");
+    if (storedToken) {
+      setToken(storedToken);
+    }
   }, []);
+  useEffect(() => {
+    if (token) {
+      fetchUsuarios();
+    }
+  }, [token]);
 
   const fetchUsuarios = async () => {
     try {
