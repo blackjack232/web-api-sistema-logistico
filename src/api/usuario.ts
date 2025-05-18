@@ -14,11 +14,10 @@ export const obtenerUsuarios = async (token: string) => {
   return await response.json();
 };
 
-export const registrarUsuario = async (data: Usuario, token: string) => {
+export const registrarUsuario = async (data: Usuario) => {
   const response = await fetch(`${API_BASE_URL}/usuario/registro`, {
     method: "POST",
     headers: {
-      // Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
