@@ -36,7 +36,7 @@ export default function LoginPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [token, setToken] = useState("");
+
 
   const { login: authLogin } = useAuth();
   const router = useRouter();
@@ -82,7 +82,7 @@ export default function LoginPage() {
   const onSubmit = async (data: UserFormData) => {
     try {
       const obtenerUsuarioCreacion = transformarAUsuario(data, "admin");
-      const resultado = await registrarUsuario(obtenerUsuarioCreacion, token);
+      const resultado = await registrarUsuario(obtenerUsuarioCreacion);
       console.log("res", resultado);
       if (resultado.esExitoso) {
         toast.success("Usuario insertado correctamente");
@@ -94,12 +94,7 @@ export default function LoginPage() {
       console.error("Error al enviar el formulario:", error);
     }
   };
-  useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
-    if (storedToken) {
-      setToken(storedToken);
-    }
-  }, []);
+ 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
       <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-md">
