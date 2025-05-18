@@ -23,12 +23,6 @@ const userSchema = z.object({
 
 type UserFormData = z.infer<typeof userSchema>;
 
-const TIPO_USUARIO = {
-  1: "Administrador",
-  2: "Cliente",
-  3: "Conductor",
-};
-
 export default function CrudUsuarios() {
   const [usuarios, setUsuarios] = useState<UserFormData[]>([]);
   const [isOpen, setIsOpen] = useState(false);
