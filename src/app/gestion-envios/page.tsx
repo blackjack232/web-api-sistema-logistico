@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useAuth } from "@/auth/AuthContext";
 import { useRouter } from "next/navigation";
 import { registrarEnvio } from "../../api/envios";
+import { Envio } from "@/domain/Envio.interface";
 
 export default function CrearEnvio() {
   const { isAuthenticated } = useAuth();
@@ -34,12 +35,25 @@ export default function CrearEnvio() {
 
   const onSubmit = async (data: EnvioFormData) => {
     try {
-      // Añadimos estado "En espera" por defecto, fechas y usuarios las pone el backend
-      const envio = {
-        ...data,
-        estado: "En espera",
-      };
-
+    
+      const envio: Envio = {
+      nombre_remitente: data.nombre_remitente,
+      nombre_destinatario: data.nombre_destinatario,
+      apellido_remitente: data.apellido_remitente,
+      apellido_destinatario: data.apellido_destinatario,
+      cedula_remitente: data.cedula_remitente,
+      cedula_destinatario: data.cedula_destinatario,
+      telefono_remitente: data.telefono_remitente,
+      telefono_destinatario: data.telefono_destinatario,
+      direccion_envio: data.direccion_envio,
+      direccion_destino: data.direccion_destino,
+      peso: data.peso,
+      ancho: data.ancho,
+      alto: data.alto,
+      tipo_producto: data.tipo_producto,
+      estado: "En espera",
+      usuario_creacion_id: 2,
+    };
       const response = await registrarEnvio(envio, token);
 
       if (response.esExitoso) {
