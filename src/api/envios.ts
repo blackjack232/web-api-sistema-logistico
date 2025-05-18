@@ -1,5 +1,6 @@
+import { Envio } from "@/domain/Envio.interface";
 
-export const registrarEnvio = async (envio: any, token: string) => {
+export const registrarEnvio = async (envio: Envio, token: string) => {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/envio`, {
     method: "POST",
     headers: {
