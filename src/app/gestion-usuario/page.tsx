@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
@@ -22,10 +21,7 @@ export default function CrudUsuarios() {
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [token, setToken] = useState("");
   const {
-    register,
-    handleSubmit,
     reset,
-    formState: { errors },
   } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
   });
@@ -57,7 +53,7 @@ export default function CrudUsuarios() {
   const onSubmit = async (data: UserFormData) => {
     try {
       const obtenerUsuarioCreacion = transformarAUsuario(data, "admin");
-      const resultado = await registrarUsuario(obtenerUsuarioCreacion, token);
+      const resultado = await registrarUsuario(obtenerUsuarioCreacion);
       console.log("res", resultado);
       if (resultado.esExitoso) {
         toast.success("Usuario insertado correctamente");
@@ -99,9 +95,9 @@ export default function CrudUsuarios() {
     }
   }, []);
   useEffect(() => {
-    if (token) {
+
       fetchUsuarios();
-    }
+
   }, [token]);
 
   const fetchUsuarios = async () => {
