@@ -3,11 +3,16 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { login } from "@/api/auth";
+import { login} from "@/api/auth";
+import { registrarUsuario } from "@/api/usuario";
 import { LoginRequest } from "@/domain/LoginRequest.interface";
 import { useAuth } from "@/auth/AuthContext";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import ModalRegistroUsuario from "../components/ModalRegistroUsuario";
+import { UserFormData } from "../schemas/usuarioSchema";
+import toast from "react-hot-toast";
+import { Usuario } from "@/domain/Usuario.interface";
 
 const schema = z.object({
   correo_electronico: z
@@ -30,11 +35,13 @@ export default function LoginPage() {
     resolver: zodResolver(schema),
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [showRegisterModal, setShowRegisterModal] = useState(false);
+  const [token, setToken] = useState("");
 
   const { login: authLogin } = useAuth();
   const router = useRouter();
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmitLogin = async (data: FormData) => {
     setIsLoading(true);
     try {
       const response = await login(data as LoginRequest);
@@ -51,7 +58,48 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+  const transformarAUsuario = (
+    data: UserFormData,
+    usuarioCreacion: string
+  ): Usuario => {
+    const fechaActual = new Date();
 
+    return {
+      nombre: data.nombre,
+      apellido: data.apellido,
+      identificacion: data.identificacion,
+      correo_electronico: data.correo_electronico,
+      contrasena: data.contrasena,
+      tipo_usuario_id: Number(data.tipo_usuario_id),
+      activo: Number(data.activo),
+      telefono: data.telefono,
+      fecha_creacion: fechaActual,
+      usuario_creacion: usuarioCreacion,
+      fecha_modificacion: fechaActual,
+      usuario_modificacion: usuarioCreacion,
+    };
+  };
+  const onSubmit = async (data: UserFormData) => {
+    try {
+      const obtenerUsuarioCreacion = transformarAUsuario(data, "admin");
+      const resultado = await registrarUsuario(obtenerUsuarioCreacion, token);
+      console.log("res", resultado);
+      if (resultado.esExitoso) {
+        toast.success("Usuario insertado correctamente");
+      } else {
+        toast.error("Error al guardar usuario");
+      }
+    } catch (error) {
+      toast.error("El correo o identificación ya están en uso");
+      console.error("Error al enviar el formulario:", error);
+    }
+  };
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+    if (storedToken) {
+      setToken(storedToken);
+    }
+  }, []);
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 px-4">
       <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-md">
@@ -59,7 +107,7 @@ export default function LoginPage() {
           Iniciar Sesión
         </h2>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmitLogin)} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">
               Correo electrónico
@@ -95,6 +143,16 @@ export default function LoginPage() {
               </p>
             )}
           </div>
+          <p className="text-center text-sm text-gray-600">
+            ¿No tienes cuenta?{" "}
+            <button
+              type="button"
+              onClick={() => setShowRegisterModal(true)}
+              className="text-orange-700 hover:underline font-medium"
+            >
+              Regístrate
+            </button>
+          </p>
 
           <button
             type="submit"
@@ -135,6 +193,15 @@ export default function LoginPage() {
           </button>
         </form>
       </div>
+      {showRegisterModal && (
+        <ModalRegistroUsuario
+          isOpen={showRegisterModal}
+          onClose={() => {
+            setShowRegisterModal(false);
+          }}
+          onSubmit={onSubmit}
+        />
+      )}
     </div>
   );
 }
