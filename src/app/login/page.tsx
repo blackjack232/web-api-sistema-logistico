@@ -12,6 +12,7 @@ import ModalRegistroUsuario from "../components/ModalRegistroUsuario";
 import { UserFormData } from "../schemas/usuarioSchema";
 import toast from "react-hot-toast";
 import { Usuario } from "@/domain/Usuario.interface";
+import { useState } from "react";
 
 const schema = z.object({
   correo_electronico: z
