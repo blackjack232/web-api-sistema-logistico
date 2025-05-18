@@ -8,7 +8,6 @@ import { registrarUsuario } from "@/api/usuario";
 import { LoginRequest } from "@/domain/LoginRequest.interface";
 import { useAuth } from "@/auth/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import ModalRegistroUsuario from "../components/ModalRegistroUsuario";
 import { UserFormData } from "../schemas/usuarioSchema";
 import toast from "react-hot-toast";
