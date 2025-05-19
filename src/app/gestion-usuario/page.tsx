@@ -12,21 +12,20 @@ import { UserFormData, userSchema } from "../schemas/usuarioSchema";
 import { useAuth } from "@/auth/AuthContext";
 import { useRouter } from "next/navigation";
 
-
-
-
 export default function CrudUsuarios() {
   const [usuarios, setUsuarios] = useState<UserFormData[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [token, setToken] = useState("");
-  const {
-    reset,
-  } = useForm<UserFormData>({
+  const { reset } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
   });
-
-    const { isAuthenticated } = useAuth();
+  const tipoUsuarioLabels: Record<string, string> = {
+    "1": "Administrador",
+    "2": "Cliente",
+    "3": "Transportista",
+  };
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const transformarAUsuario = (
     data: UserFormData,
@@ -89,18 +88,20 @@ export default function CrudUsuarios() {
   };
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("authToken");
-    if (storedToken) {
-      setToken(storedToken);
+    if (isLoading) return;
+
+    if (!isAuthenticated) {
+      router.replace("/login");
+    } else {
+      const storedToken = localStorage.getItem("authToken");
+      if (storedToken) {
+        setToken(storedToken);
+        fetchUsuarios(storedToken);
+      }
     }
-  }, []);
-  useEffect(() => {
+  }, [isAuthenticated, isLoading, router]);
 
-      fetchUsuarios();
-
-  }, [token]);
-
-  const fetchUsuarios = async () => {
+  const fetchUsuarios = async (token: string) => {
     try {
       const response = await obtenerUsuarios(token);
       if (!response.esExitoso) throw new Error("Error al obtener usuarios");
@@ -112,18 +113,12 @@ export default function CrudUsuarios() {
       console.error("Error cargando usuarios:", error);
     }
   };
-   useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace("/login");
-    }
-  }, [isAuthenticated, router]);
 
   if (!isAuthenticated) {
     return null;
   }
 
   return (
-
     <div className="mt-24 min-h-screen bg-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white p-6 rounded-2xl shadow-md">
         <div className="flex justify-between items-center mb-4">
@@ -162,8 +157,13 @@ export default function CrudUsuarios() {
                   <td className="p-2">{usuario.apellido}</td>
                   <td className="p-2">{usuario.correo_electronico}</td>
                   <td className="p-2">{usuario.telefono}</td>
-                  <td className="p-2">{usuario.tipo_usuario_id}</td>
-                  <td className="p-2">{usuario.activo}</td>
+                  <td className="p-2">
+                    {tipoUsuarioLabels[usuario.tipo_usuario_id] ??
+                      "Desconocido"}
+                  </td>
+                  <td className="p-2">
+                    {usuario.activo === "1" ? "Activo" : "Inactivo"}
+                  </td>
                   <td className="p-2 flex gap-2">
                     <button
                       onClick={() => handleEdit(index)}
