@@ -12,7 +12,7 @@ import { Envio } from "@/domain/Envio.interface";
 import { useDecodedToken } from "../utils/useDecodedToken";
 
 export default function CrearEnvio() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const [token, setToken] = useState("");
   const usuario = useDecodedToken();
@@ -25,15 +25,16 @@ export default function CrearEnvio() {
   } = useForm<EnvioFormData>({
     resolver: zodResolver(envioSchema),
   });
-
   useEffect(() => {
+    if (isLoading) return;
+
     if (!isAuthenticated) {
       router.replace("/login");
     } else {
       const storedToken = localStorage.getItem("authToken");
       if (storedToken) setToken(storedToken);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, isLoading, router]);
 
   const onSubmit = async (data: EnvioFormData) => {
     try {
@@ -62,7 +63,7 @@ export default function CrearEnvio() {
         toast.success(
           `Envío registrado correctamente. El número de GUIA es: ${response.data.data.numero_guia}`,
           {
-            duration: 120000, 
+            duration: 120000,
           }
         );
 
