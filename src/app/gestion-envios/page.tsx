@@ -9,11 +9,13 @@ import { useAuth } from "@/auth/AuthContext";
 import { useRouter } from "next/navigation";
 import { registrarEnvio } from "../../api/envios";
 import { Envio } from "@/domain/Envio.interface";
+import { useDecodedToken } from "../utils/useDecodedToken";
 
 export default function CrearEnvio() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
   const [token, setToken] = useState("");
+  const usuario = useDecodedToken();
 
   const {
     register,
@@ -35,30 +37,37 @@ export default function CrearEnvio() {
 
   const onSubmit = async (data: EnvioFormData) => {
     try {
-    
       const envio: Envio = {
-      nombre_remitente: data.nombre_remitente,
-      nombre_destinatario: data.nombre_destinatario,
-      apellido_remitente: data.apellido_remitente,
-      apellido_destinatario: data.apellido_destinatario,
-      cedula_remitente: data.cedula_remitente,
-      cedula_destinatario: data.cedula_destinatario,
-      telefono_remitente: data.telefono_remitente,
-      telefono_destinatario: data.telefono_destinatario,
-      direccion_envio: data.direccion_envio,
-      direccion_destino: data.direccion_destino,
-      peso: data.peso,
-      ancho: data.ancho,
-      alto: data.alto,
-      tipo_producto: data.tipo_producto,
-      estado: "En espera",
-      usuario_creacion_id: 2,
-    };
+        nombre_remitente: data.nombre_remitente,
+        nombre_destinatario: data.nombre_destinatario,
+        apellido_remitente: data.apellido_remitente,
+        apellido_destinatario: data.apellido_destinatario,
+        cedula_remitente: data.cedula_remitente,
+        cedula_destinatario: data.cedula_destinatario,
+        telefono_remitente: data.telefono_remitente,
+        telefono_destinatario: data.telefono_destinatario,
+        direccion_envio: data.direccion_envio,
+        direccion_destino: data.direccion_destino,
+        peso: data.peso,
+        ancho: data.ancho,
+        alto: data.alto,
+        tipo_producto: data.tipo_producto,
+        estado: "En espera",
+        usuario_creacion_id: usuario?.id ?? 1,
+      };
       const response = await registrarEnvio(envio, token);
 
       if (response.esExitoso) {
-        toast.success("Envío registrado correctamente");
+        console.log(response.data);
+        toast.success(
+          `Envío registrado correctamente. El número de GUIA es: ${response.data.data.numero_guia}`,
+          {
+            duration: 120000, 
+          }
+        );
+
         reset();
+        router.push("/seguimiento-envios");
       } else {
         toast.error("Error al registrar el envío");
       }
@@ -73,7 +82,9 @@ export default function CrearEnvio() {
   return (
     <div className="mt-24 min-h-screen bg-gray-100 p-6">
       <div className="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-md">
-        <h2 className="text-xl font-bold text-orange-700 mb-6">Registrar nuevo envío</h2>
+        <h2 className="text-xl font-bold text-orange-700 mb-6">
+          Registrar nuevo envío
+        </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Remitente */}
@@ -85,7 +96,9 @@ export default function CrearEnvio() {
                 className="w-full p-2 border rounded text-[#686868]"
               />
               {errors.nombre_remitente && (
-                <p className="text-red-500">{errors.nombre_remitente.message}</p>
+                <p className="text-red-500">
+                  {errors.nombre_remitente.message}
+                </p>
               )}
             </div>
             <div>
@@ -95,7 +108,9 @@ export default function CrearEnvio() {
                 className="w-full p-2 border rounded text-[#686868]"
               />
               {errors.apellido_remitente && (
-                <p className="text-red-500">{errors.apellido_remitente.message}</p>
+                <p className="text-red-500">
+                  {errors.apellido_remitente.message}
+                </p>
               )}
             </div>
             <div>
@@ -105,7 +120,9 @@ export default function CrearEnvio() {
                 className="w-full p-2 border rounded text-[#686868]"
               />
               {errors.cedula_remitente && (
-                <p className="text-red-500">{errors.cedula_remitente.message}</p>
+                <p className="text-red-500">
+                  {errors.cedula_remitente.message}
+                </p>
               )}
             </div>
             <div>
@@ -115,7 +132,9 @@ export default function CrearEnvio() {
                 className="w-full p-2 border rounded text-[#686868]"
               />
               {errors.telefono_remitente && (
-                <p className="text-red-500">{errors.telefono_remitente.message}</p>
+                <p className="text-red-500">
+                  {errors.telefono_remitente.message}
+                </p>
               )}
             </div>
           </div>
@@ -129,7 +148,9 @@ export default function CrearEnvio() {
                 className="w-full p-2 border rounded text-[#686868]"
               />
               {errors.nombre_destinatario && (
-                <p className="text-red-500">{errors.nombre_destinatario.message}</p>
+                <p className="text-red-500">
+                  {errors.nombre_destinatario.message}
+                </p>
               )}
             </div>
             <div>
@@ -139,7 +160,9 @@ export default function CrearEnvio() {
                 className="w-full p-2 border rounded text-[#686868]"
               />
               {errors.apellido_destinatario && (
-                <p className="text-red-500">{errors.apellido_destinatario.message}</p>
+                <p className="text-red-500">
+                  {errors.apellido_destinatario.message}
+                </p>
               )}
             </div>
             <div>
@@ -149,7 +172,9 @@ export default function CrearEnvio() {
                 className="w-full p-2 border rounded text-[#686868]"
               />
               {errors.cedula_destinatario && (
-                <p className="text-red-500">{errors.cedula_destinatario.message}</p>
+                <p className="text-red-500">
+                  {errors.cedula_destinatario.message}
+                </p>
               )}
             </div>
             <div>
@@ -159,7 +184,9 @@ export default function CrearEnvio() {
                 className="w-full p-2 border rounded text-[#686868]"
               />
               {errors.telefono_destinatario && (
-                <p className="text-red-500">{errors.telefono_destinatario.message}</p>
+                <p className="text-red-500">
+                  {errors.telefono_destinatario.message}
+                </p>
               )}
             </div>
           </div>
@@ -196,7 +223,9 @@ export default function CrearEnvio() {
                 {...register("peso", { valueAsNumber: true })}
                 className="w-full p-2 border rounded text-[#686868]"
               />
-              {errors.peso && <p className="text-red-500">{errors.peso.message}</p>}
+              {errors.peso && (
+                <p className="text-red-500">{errors.peso.message}</p>
+              )}
             </div>
             <div>
               <label className="text-gray-700">Ancho (cm):</label>
@@ -206,7 +235,9 @@ export default function CrearEnvio() {
                 {...register("ancho", { valueAsNumber: true })}
                 className="w-full p-2 border rounded text-[#686868]"
               />
-              {errors.ancho && <p className="text-red-500">{errors.ancho.message}</p>}
+              {errors.ancho && (
+                <p className="text-red-500">{errors.ancho.message}</p>
+              )}
             </div>
             <div>
               <label className="text-gray-700">Alto (cm):</label>
@@ -216,7 +247,9 @@ export default function CrearEnvio() {
                 {...register("alto", { valueAsNumber: true })}
                 className="w-full p-2 border rounded text-[#686868]"
               />
-              {errors.alto && <p className="text-red-500">{errors.alto.message}</p>}
+              {errors.alto && (
+                <p className="text-red-500">{errors.alto.message}</p>
+              )}
             </div>
           </div>
 

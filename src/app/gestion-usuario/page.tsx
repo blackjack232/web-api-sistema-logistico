@@ -110,7 +110,6 @@ export default function CrudUsuarios() {
       toast.success("Usuarios cargados correctamente");
     } catch (error) {
       console.error("Error cargando usuarios:", error);
-      toast.error("Error al obtener usuarios");
     }
   };
    useEffect(() => {
