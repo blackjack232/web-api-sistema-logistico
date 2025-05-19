@@ -12,7 +12,7 @@ interface DecodedToken {
   usuario_modificacion_id?: string
   exp?: number
   iat?: number
-  [key: string]: any
+  [key: string]: unknown
 }
 
 export const useDecodedToken = (): DecodedToken | null => {
