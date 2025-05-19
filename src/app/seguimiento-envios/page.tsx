@@ -7,20 +7,19 @@ import { useEffect, useState } from "react";
 
 interface Envio {
   numero_guia: string;
-  nombre_Remitente: string;
+  cedula_remitente: string;
   apellido_Remitente: string;
-  nombre_Destinatario: string;
+  cedula_destinatario: string;
   apellido_Destinatario: string;
   estado: string;
 }
 
 export default function SeguimientoEnvios() {
-  const [envios, setEnvios] = useState<Envio[]>([]);
   const [busqueda, setBusqueda] = useState("");
   const [loading, setLoading] = useState(false);
   const [resultados, setResultados] = useState<Envio | null>(null);
   const [token, setToken] = useState("");
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated , isLoading} = useAuth();
   const router = useRouter();
 
 
@@ -55,14 +54,17 @@ export default function SeguimientoEnvios() {
         return "bg-gray-400";
     }
   };
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace("/login");
-    } else {
-      const storedToken = localStorage.getItem("authToken");
-      if (storedToken) setToken(storedToken);
-    }
-  }, [isAuthenticated, router]);
+ useEffect(() => {
+  if (isLoading) return; 
+
+  if (!isAuthenticated) {
+    router.replace("/login");
+  } else {
+    const storedToken = localStorage.getItem("authToken");
+    if (storedToken) setToken(storedToken);
+  }
+}, [isAuthenticated, isLoading, router]);
+
 
   if (!isAuthenticated) return null;
   return (
@@ -90,8 +92,8 @@ export default function SeguimientoEnvios() {
         <thead>
           <tr className="bg-gray-200 text-gray-700">
             <th className="p-2 border">Número de Guía</th>
-            <th className="p-2 border">Remitente</th>
-            <th className="p-2 border">Destinatario</th>
+            <th className="p-2 border">No. cedula Remitente</th>
+            <th className="p-2 border">No. cedula Destinatario</th>
             <th className="p-2 border">Estado</th>
           </tr>
         </thead>
@@ -100,11 +102,11 @@ export default function SeguimientoEnvios() {
             <tr className="text-center border-t">
               <td className="p-2 border">{resultados.numero_guia}</td>
               <td className="p-2 border">
-                {resultados.nombre_Remitente} {resultados.apellido_Remitente}
+                {resultados.cedula_remitente}
               </td>
               <td className="p-2 border">
-                {resultados.nombre_Destinatario}{" "}
-                {resultados.apellido_Destinatario}
+                {resultados.cedula_destinatario}{" "}
+
               </td>
               <td className="p-2 border">
                 <span
