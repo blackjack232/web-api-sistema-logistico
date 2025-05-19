@@ -10,6 +10,7 @@ const navigation = [
   { name: 'Login', href: '/login', public: true, onlyWhenLoggedOut: true },
   { name: 'Gestion usuario', href: '/gestion-usuario', public: false },
   { name: 'Gestion envios', href: '/gestion-envios', public: false },
+  { name: 'Rastreo', href: '/seguimiento-envios', public: false },
   { name: 'Contacto', href: '/contacto', public: true },
 ]
 
