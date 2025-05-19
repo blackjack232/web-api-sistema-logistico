@@ -16,7 +16,6 @@ export default function CrudUsuarios() {
   const [usuarios, setUsuarios] = useState<UserFormData[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [token, setToken] = useState("");
   const { reset } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
   });
@@ -53,7 +52,7 @@ export default function CrudUsuarios() {
     try {
       const obtenerUsuarioCreacion = transformarAUsuario(data, "admin");
       const resultado = await registrarUsuario(obtenerUsuarioCreacion);
-      console.log("res", resultado);
+    
       if (resultado.esExitoso) {
         toast.success("Usuario insertado correctamente");
         if (editIndex !== null) {
@@ -95,7 +94,6 @@ export default function CrudUsuarios() {
     } else {
       const storedToken = localStorage.getItem("authToken");
       if (storedToken) {
-        setToken(storedToken);
         fetchUsuarios(storedToken);
       }
     }
