@@ -11,3 +11,9 @@ Sigue estos pasos para ejecutar el proyecto en modo desarrollo:
 
 4. Una vez finalizada la instalación, ejecuta npm run dev para iniciar el servidor de desarrollo local.
 5. El servidor se iniciará en http://localhost:3000. Abre esa URL en tu navegador para ver la aplicación en funcionamiento.
+
+🌐 Versión en línea
+Si deseas consultar la versión desplegada de la API, puedes acceder a la siguiente URL:
+🔗 https://web-api-sistema-logistico.onrender.com
+
+⚠️ Nota: Esta versión está desactualizada, ya que no fue posible desplegar Redis en los servicios gratuitos de Render. Esto puede afectar el funcionamiento de algunas funcionalidades que dependen de Redis.
