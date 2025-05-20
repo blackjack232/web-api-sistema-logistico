@@ -11,6 +11,8 @@ const navigation = [
   { name: 'Gestion usuario', href: '/gestion-usuario', public: false },
   { name: 'Gestion envios', href: '/gestion-envios', public: false },
   { name: 'Rastreo', href: '/seguimiento-envios', public: false },
+  { name: 'Asignacion rutas', href: '/asignacion-ruta', public: false },
+  { name: 'Dashboard', href: '/dashboard', public: false },
   { name: 'Contacto', href: '/contacto', public: true },
 ]
 
